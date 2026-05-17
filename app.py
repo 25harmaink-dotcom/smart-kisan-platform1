@@ -5,7 +5,6 @@ import auth
 import farmer_dashboard
 import admin_dashboard
 
-# --- Page Config ---
 st.set_page_config(
     page_title="Smart KisanJal",
     page_icon="💧",
@@ -13,31 +12,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ── Master Light Theme CSS ─────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
 
-/* ════════════════════════════════════════════════════════
-   ROOT VARIABLES
-════════════════════════════════════════════════════════ */
 :root {
-    --bg:       #f3fbf4;
-    --bg2:      #e7f6ea;
-    --card:     #ffffff;
-    --green:    #43a047;
-    --dark:     #2e7d32;
-    --text:     #163a2f;
-    --muted:    #4a7a5a;
-    --border:   #c8e3cf;
-    --shadow:   0 4px 16px rgba(30,90,50,0.09);
+    --bg:     #f3fbf4;
+    --bg2:    #e7f6ea;
+    --card:   #ffffff;
+    --green:  #43a047;
+    --dark:   #2e7d32;
+    --text:   #163a2f;
+    --muted:  #4a7a5a;
+    --border: #c8e3cf;
+    --shadow: 0 4px 16px rgba(30,90,50,0.09);
 }
 
-/* ════════════════════════════════════════════════════════
-   FORCE LIGHT BACKGROUND ON EVERY STREAMLIT WRAPPER
-════════════════════════════════════════════════════════ */
-html, body,
-.stApp,
+/* ── Base backgrounds ── */
+html, body, .stApp,
 [data-testid="stApp"],
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"],
@@ -48,15 +40,11 @@ html, body,
 [data-testid="stHeader"],
 [data-testid="stDecoration"],
 [data-testid="stToolbar"],
-section.main,
-.main,
-.block-container,
-div[class^="css"] {
+section.main, .main, .block-container {
     background-color: var(--bg) !important;
     background: var(--bg) !important;
     color: var(--text) !important;
 }
-
 .stApp {
     background:
         radial-gradient(circle at 10% 8%, #eef9f1 0%, transparent 38%),
@@ -64,9 +52,6 @@ div[class^="css"] {
         var(--bg) !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   SIDEBAR
-════════════════════════════════════════════════════════ */
 [data-testid="stSidebar"],
 [data-testid="stSidebar"] > div,
 [data-testid="stSidebar"] > div > div {
@@ -74,26 +59,19 @@ div[class^="css"] {
     border-right: 1px solid var(--border) !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   FORCE ALL TEXT TO DARK GREEN (never white-on-white)
-════════════════════════════════════════════════════════ */
-*, *::before, *::after,
-p, span, label, div, h1, h2, h3, h4, h5, h6,
+/* ── Typography — targeted only, no wildcard div ── */
+p, span, label, h1, h2, h3, h4, h5, h6,
 li, a, small, td, th, pre, code,
-input, textarea, select, option, button {
+input, textarea, select, option {
     color: var(--text) !important;
     font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   INPUTS & TEXTAREAS
-════════════════════════════════════════════════════════ */
+/* ── Inputs ── */
 input, textarea,
 [data-baseweb="input"] input,
 [data-baseweb="textarea"] textarea,
-.stTextInput input,
-.stTextArea textarea,
-.stNumberInput input {
+.stTextInput input, .stTextArea textarea, .stNumberInput input {
     background-color: #ffffff !important;
     color: var(--text) !important;
     border: 1px solid var(--border) !important;
@@ -105,9 +83,7 @@ input:focus, textarea:focus {
     outline: none !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   SELECTBOX / DROPDOWNS
-════════════════════════════════════════════════════════ */
+/* ── Selects / Dropdowns ── */
 [data-baseweb="select"] > div,
 [data-baseweb="select"] > div > div {
     background-color: #ffffff !important;
@@ -115,21 +91,14 @@ input:focus, textarea:focus {
     border: 1px solid var(--border) !important;
     border-radius: 10px !important;
 }
-[data-baseweb="popover"],
-[data-baseweb="popover"] div,
-[data-baseweb="menu"],
-[role="listbox"],
-[role="option"] {
+[data-baseweb="popover"], [data-baseweb="popover"] div,
+[data-baseweb="menu"], [role="listbox"], [role="option"] {
     background-color: #ffffff !important;
     color: var(--text) !important;
 }
-[role="option"]:hover {
-    background-color: var(--bg2) !important;
-}
+[role="option"]:hover { background-color: var(--bg2) !important; }
 
-/* ════════════════════════════════════════════════════════
-   BUTTONS
-════════════════════════════════════════════════════════ */
+/* ── Default buttons ── */
 .stButton > button {
     background: linear-gradient(135deg, #59b66e, #3f9c56) !important;
     color: #ffffff !important;
@@ -150,9 +119,40 @@ input:focus, textarea:focus {
 .stButton > button p { color: #ffffff !important; margin: 0 !important; }
 .stButton { width: 100% !important; }
 
-/* ════════════════════════════════════════════════════════
-   TABS
-════════════════════════════════════════════════════════ */
+/* ── File uploader — fix double text ── */
+[data-testid="stFileUploadDropzone"] {
+    background: #ffffff !important;
+    border: 2px dashed var(--border) !important;
+    border-radius: 10px !important;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] {
+    /* ensure clean single render */
+    position: relative !important;
+    overflow: hidden !important;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] div,
+[data-testid="stFileUploaderDropzoneInstructions"] span {
+    font-size: 0.88rem !important;
+    color: var(--muted) !important;
+}
+[data-testid="stFileUploadDropzone"] button {
+    background: var(--bg2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    color: var(--text) !important;
+    font-weight: 600 !important;
+}
+/* Remove phantom pseudo-element text */
+[data-testid="stFileUploadDropzone"] button span::before,
+[data-testid="stFileUploadDropzone"] button span::after,
+[data-testid="stFileUploadDropzone"] button::before,
+[data-testid="stFileUploadDropzone"] button::after {
+    display: none !important;
+    content: none !important;
+}
+[data-testid="stFileUploadDropzone"] small { color: var(--muted) !important; }
+
+/* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
     background: #e9f5ec !important;
     border: 1px solid var(--border) !important;
@@ -172,24 +172,27 @@ input:focus, textarea:focus {
 }
 .stTabs [aria-selected="true"] p { color: #ffffff !important; }
 
-/* ════════════════════════════════════════════════════════
-   EXPANDERS
-════════════════════════════════════════════════════════ */
-[data-testid="stExpander"],
-.streamlit-expanderHeader {
+/* ── Expanders — fix garbled / doubled header text ── */
+[data-testid="stExpander"] {
     background-color: #ffffff !important;
     border: 1px solid var(--border) !important;
     border-radius: 10px !important;
-    color: var(--text) !important;
 }
-.streamlit-expanderContent {
+/* Hide phantom duplicate text node */
+[data-testid="stExpander"] details summary > div > p:not(:first-child) {
+    display: none !important;
+}
+[data-testid="stExpander"] details summary p {
+    color: var(--text) !important;
+    font-weight: 600 !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+[data-testid="stExpanderDetails"] {
     background-color: var(--bg2) !important;
-    border: 1px solid var(--border) !important;
+    border-top: 1px solid var(--border) !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   ALERTS / INFO / SUCCESS / WARNING / ERROR
-════════════════════════════════════════════════════════ */
+/* ── Alerts ── */
 [data-testid="stAlert"],
 .stAlert, .stSuccess, .stInfo, .stWarning, .stError,
 div[data-baseweb="notification"] {
@@ -199,9 +202,7 @@ div[data-baseweb="notification"] {
     border-radius: 10px !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   RADIO BUTTONS
-════════════════════════════════════════════════════════ */
+/* ── Radio ── */
 .stRadio > div { flex-direction: row; gap: 1rem; }
 .stRadio > div > label {
     background: var(--card) !important;
@@ -211,17 +212,13 @@ div[data-baseweb="notification"] {
     color: var(--text) !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   DATAFRAMES
-════════════════════════════════════════════════════════ */
+/* ── Dataframe ── */
 .dataframe, [data-testid="stDataFrame"] {
     background: var(--card) !important;
     color: var(--text) !important;
 }
 
-/* ════════════════════════════════════════════════════════
-   HERO / CARDS / COMPONENTS
-════════════════════════════════════════════════════════ */
+/* ── Custom component classes ── */
 .hero-container {
     background: linear-gradient(130deg, #f7fff8 0%, #edf9f0 55%, #e4f5e8 100%);
     border: 1px solid var(--border);
@@ -232,17 +229,12 @@ div[data-baseweb="notification"] {
     box-shadow: var(--shadow);
 }
 .hero-title {
-    font-size: clamp(2rem, 4vw, 2.8rem) !important;
+    font-size: clamp(2rem,4vw,2.8rem) !important;
     font-weight: 700 !important;
     color: var(--dark) !important;
     margin-bottom: 0.45rem;
-    letter-spacing: -0.4px;
 }
-.hero-subtitle {
-    font-size: 1.05rem;
-    color: var(--muted) !important;
-    margin-bottom: 0.25rem;
-}
+.hero-subtitle { font-size: 1.05rem; color: var(--muted) !important; }
 .kisan-card {
     background: var(--card);
     border: 1px solid var(--border) !important;
@@ -263,15 +255,12 @@ div[data-baseweb="notification"] {
 }
 .metric-value { font-size: 1.8rem; font-weight: 700; color: var(--green) !important; }
 .metric-label { font-size: 0.85rem; color: var(--muted) !important; margin-top: 0.25rem; }
-
-.alert-success { background:#eefaf1; border:1px solid #b7e0c1; border-radius:10px; padding:0.95rem; color:#2f7f44 !important; margin:0.5rem 0; }
-.alert-info    { background:#edf9ef; border:1px solid #b7e0c1; border-radius:10px; padding:0.95rem; color:#1f5b40 !important; margin:0.5rem 0; }
-.alert-warning { background:#effaf2; border:1px solid #b7e0c1; border-radius:10px; padding:0.95rem; color:#1f5b40 !important; margin:0.5rem 0; }
+.alert-success { background:#eefaf1; border:1px solid #b7e0c1; border-radius:10px; padding:0.95rem; color:#2f7f44!important; margin:0.5rem 0; }
+.alert-info    { background:#edf9ef; border:1px solid #b7e0c1; border-radius:10px; padding:0.95rem; color:#1f5b40!important; margin:0.5rem 0; }
+.alert-warning { background:#effaf2; border:1px solid #b7e0c1; border-radius:10px; padding:0.95rem; color:#1f5b40!important; margin:0.5rem 0; }
 .green-divider { height:2px; background:linear-gradient(90deg,transparent,var(--green),transparent); margin:1.5rem 0; border:none; }
 
-/* ════════════════════════════════════════════════════════
-   TOPBAR PILLS
-════════════════════════════════════════════════════════ */
+/* ── India flag top-left pill ── */
 #india-flag-topbar {
     position: fixed; top: 0.5rem; left: 1rem; z-index: 99999;
     display: flex; align-items: center; gap: 0.45rem;
@@ -283,163 +272,148 @@ div[data-baseweb="notification"] {
 #india-flag-topbar .flag-emoji { font-size: 1.25rem; line-height: 1; }
 #india-flag-topbar .flag-text  { font-size: 0.75rem; font-weight: 700; color: var(--text) !important; }
 
-#topbar-login-pill {
-    position: fixed; top: 1rem; right: 1.2rem; z-index: 99999;
+/* ── Top-right logout/login button container ──
+   The real Streamlit button inside #topbar-btn-container is
+   CSS-positioned to the top-right corner. No JS tricks needed. */
+#topbar-btn-container {
+    position: fixed !important;
+    top: 0.52rem !important;
+    right: 1.2rem !important;
+    z-index: 99999 !important;
+    width: auto !important;
+}
+#topbar-btn-container .stButton {
+    width: auto !important;
+}
+#topbar-btn-container .stButton > button {
+    width: auto !important;
+    min-width: 110px !important;
+    border-radius: 24px !important;
+    padding: 0.52rem 1.35rem !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    min-height: 38px !important;
+    background: linear-gradient(135deg, #43a047, #2e7d32) !important;
+    box-shadow: 0 3px 14px rgba(46,125,50,0.32) !important;
+    letter-spacing: 0.01em !important;
+}
+#topbar-btn-container .stButton > button:hover {
+    box-shadow: 0 5px 18px rgba(46,125,50,0.42) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ── Brand pill (no button, just label) ── */
+#topbar-brand-pill {
+    position: fixed; top: 0.52rem; right: 1.2rem; z-index: 99999;
     display: flex; align-items: center; gap: 0.5rem;
     background: linear-gradient(135deg, #43a047, #2e7d32);
-    border: none; border-radius: 24px; padding: 0.55rem 1.4rem;
+    border: none; border-radius: 24px; padding: 0.52rem 1.35rem;
     box-shadow: 0 3px 14px rgba(46,125,50,0.32);
-    cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+    pointer-events: none; user-select: none;
 }
-#topbar-login-pill:hover { box-shadow: 0 5px 18px rgba(46,125,50,0.42); transform: translateY(-1px); }
-#topbar-login-pill span  { font-size: 0.92rem; font-weight: 700; color: #ffffff !important; }
+#topbar-brand-pill span { font-size: 0.92rem; font-weight: 700; color: #ffffff !important; }
 
-/* ════════════════════════════════════════════════════════
-   SCROLLBAR / MISC
-════════════════════════════════════════════════════════ */
+/* Hide Streamlit chrome */
 #MainMenu { visibility: hidden; }
 footer    { visibility: hidden; }
 header    { visibility: hidden; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
 .main .block-container { padding-top: 1.5rem; padding-bottom: 2.25rem; max-width: 1200px; }
-
-/* ════════════════════════════════════════════════════════
-   HIDE TOPBAR TRIGGER BUTTONS (TOPBAR_LOGOUT / TOPBAR_LOGIN)
-   These are functional Streamlit buttons hidden visually;
-   the visible pill above triggers them via JS onclick.
-════════════════════════════════════════════════════════ */
-/* Hide the button block that contains TOPBAR_LOGOUT or TOPBAR_LOGIN */
-.stButton:has(button p):not(:has(button p:empty)) button p {
-    /* visible by default */
-}
-
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize database
 init_db()
+
+
+def _do_logout():
+    if st.session_state.get("user_type") == "admin":
+        try:
+            from database import log_admin_action
+            log_admin_action(st.session_state.user_data["username"], "LOGOUT", "Logged out")
+        except Exception:
+            pass
+    for k in ["logged_in", "user_type", "user_data"]:
+        st.session_state[k] = None
+    st.session_state.logged_in = False
+    st.session_state.page = "language_select"
+    st.rerun()
+
 
 def show_topbar():
     logged_in = st.session_state.get("logged_in", False)
     page      = st.session_state.get("page", "language_select")
-    show_logout_btn = logged_in
-    show_login_btn  = not logged_in and page not in ("login", "language_select")
 
+    # India flag — always shown top-left
     st.markdown("""
     <div id="india-flag-topbar">
-        <span class="flag-emoji">🇮🇳</span>
+        <span class="flag-emoji">&#127470;&#127475;</span>
         <span class="flag-text">India</span>
     </div>""", unsafe_allow_html=True)
 
-    action_key = f"topbar_btn_{page}"
+    # Top-right: real Streamlit button inside a CSS-fixed container
+    if logged_in:
+        st.markdown('<div id="topbar-btn-container">', unsafe_allow_html=True)
+        if st.button("🚪 Logout", key=f"topbar_logout_{page}"):
+            _do_logout()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    if show_logout_btn:
-        st.markdown("""
-        <div id="topbar-login-pill" onclick="
-            Array.from(window.parent.document.querySelectorAll('button')).find(
-                b => b.innerText.trim() === 'TOPBAR_LOGOUT')?.click();">
-            <span>🚪 Logout</span>
-        </div>""", unsafe_allow_html=True)
-        if st.button("TOPBAR_LOGOUT", key=action_key):
-            from database import log_admin_action as _log
-            if st.session_state.get("user_type") == "admin":
-                try: _log(st.session_state.user_data["username"], "LOGOUT", "Logged out via topbar")
-                except: pass
-            for k in ["logged_in","user_type","user_data"]:
-                st.session_state[k] = None
-            st.session_state.logged_in = False
-            st.session_state.page = "language_select"
-            st.rerun()
-
-    elif show_login_btn:
-        st.markdown("""
-        <div id="topbar-login-pill" onclick="
-            Array.from(window.parent.document.querySelectorAll('button')).find(
-                b => b.innerText.trim().startsWith('TOPBAR_LOGIN'))?.click();">
-            <span>🔐 Login</span>
-        </div>""", unsafe_allow_html=True)
-        st.markdown("<div style='position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;'>", unsafe_allow_html=True)
-        if st.button("TOPBAR_LOGIN", key=action_key):
+    elif page not in ("login", "language_select"):
+        st.markdown('<div id="topbar-btn-container">', unsafe_allow_html=True)
+        if st.button("🔑 Login", key=f"topbar_login_{page}"):
             st.session_state.page = "login"
             st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     else:
+        # Language select / login pages — show brand pill (non-clickable)
         st.markdown("""
-        <div id="topbar-login-pill" style="cursor:default;">
-            <span>💧 Smart KisanJal</span>
+        <div id="topbar-brand-pill">
+            <span>&#128167; Smart KisanJal</span>
         </div>""", unsafe_allow_html=True)
 
-# --- Session State ---
+
 def init_session():
-    for k, v in {'language':None,'logged_in':False,'user_type':None,'user_data':None,'page':'language_select'}.items():
+    for k, v in {
+        'language': None, 'logged_in': False,
+        'user_type': None, 'user_data': None,
+        'page': 'language_select'
+    }.items():
         if k not in st.session_state:
             st.session_state[k] = v
+
 
 init_session()
 page = st.session_state.page
 show_topbar()
 
-# Inject JS to hide the TOPBAR_LOGOUT/TOPBAR_LOGIN trigger buttons after render
-st.markdown("""<script>
-(function(){
-  function hideBtn(){
-    try {
-      var btns=window.parent.document.querySelectorAll('button');
-      btns.forEach(function(b){
-        var t=b.innerText.trim();
-        if(t==='TOPBAR_LOGOUT'||t==='TOPBAR_LOGIN'){
-          // Hide the button itself
-          b.style.cssText='position:fixed!important;top:-9999px!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:auto!important;';
-          // Walk up and hide the stVerticalBlock container
-          var el=b;
-          for(var i=0;i<8;i++){
-            el=el.parentElement;
-            if(!el) break;
-            if(el.className&&el.className.indexOf('stVerticalBlock')>-1){
-              el.style.cssText='position:fixed!important;top:-9999px!important;left:-9999px!important;height:1px!important;width:1px!important;overflow:hidden!important;';
-              break;
-            }
-          }
-        }
-      });
-    } catch(e){}
-  }
-  hideBtn();
-  setTimeout(hideBtn,100);
-  setTimeout(hideBtn,500);
-  setTimeout(hideBtn,1500);
-  var mo=new MutationObserver(hideBtn);
-  mo.observe(window.parent.document.body,{childList:true,subtree:true});
-})();
-</script>""", unsafe_allow_html=True)
-
-# ── ROUTER ─────────────────────────────────────────────────────────────────────
+# ── Router ────────────────────────────────────────────────────────────────────
 if page == 'language_select':
     st.markdown("""
     <div class="hero-container">
-        <div class="hero-title">💧 Smart KisanJal</div>
+        <div class="hero-title">&#128167; Smart KisanJal</div>
         <div class="hero-subtitle">Empowering Farmers with Smart Technology</div>
-        <div class="hero-subtitle" style="font-family:'Noto Sans Devanagari',sans-serif;">किसानों को स्मार्ट तकनीक से सशक्त बनाना</div>
+        <div class="hero-subtitle" style="font-family:'Noto Sans Devanagari',sans-serif;margin-top:0.3rem;">
+            &#2325;&#2367;&#2360;&#2366;&#2344;&#2379;&#2306; &#2325;&#2379; &#2360;&#2381;&#2350;&#2366;&#2352;&#2381;&#2335;
+            &#2340;&#2325;&#2344;&#2368;&#2325; &#2360;&#2375; &#2360;&#2358;&#2325;&#2381;&#2340; &#2348;&#2344;&#2366;&#2344;&#2366;
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown(
-        "<div style='text-align:center;font-size:1.08rem;color:#4c6f60;margin-bottom:1.6rem;'>"
-        "Please select your preferred language</div>",
+        "<p style='text-align:center;font-size:1.08rem;color:#4c6f60;margin-bottom:1.6rem;'>"
+        "Please select your preferred language / अपनी भाषा चुनें</p>",
         unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        lcol1, lcol2, lcol3 = st.columns(3)
-        lang_map = [
-            (lcol1, "English", "en"), (lcol2, "हिंदी", "hi"), (lcol3, "বাংলা", "bn"),
-            (lcol1, "मराठी", "mr"),   (lcol2, "ગુજરાતી","gu"), (lcol3, "தமிழ்","ta"),
-        ]
-        for col, label, code in lang_map:
+        r1c1, r1c2, r1c3 = st.columns(3)
+        r2c1, r2c2, r2c3 = st.columns(3)
+        for col, label, code in [
+            (r1c1, "English",   "en"), (r1c2, "हिंदी",    "hi"), (r1c3, "বাংলা",   "bn"),
+            (r2c1, "मराठी",    "mr"), (r2c2, "ગુજરાતી", "gu"), (r2c3, "தமிழ்",  "ta"),
+        ]:
             with col:
                 if st.button(label, use_container_width=True, key=f"lang_{code}"):
                     st.session_state.language = code
@@ -449,10 +423,10 @@ if page == 'language_select':
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("""
         <div class='kisan-card' style='text-align:center;'>
-            <div style='color:#4f6f61;font-size:0.9rem;'>
+            <p style='color:#4f6f61;font-size:0.9rem;margin:0;'>
                 Irrigation Planning &nbsp;|&nbsp; Government Schemes &nbsp;|&nbsp; Complaint Management<br>
                 सिंचाई योजना &nbsp;|&nbsp; सरकारी योजनाएं &nbsp;|&nbsp; शिकायत प्रबंधन
-            </div>
+            </p>
         </div>""", unsafe_allow_html=True)
 
 elif page == 'login':
