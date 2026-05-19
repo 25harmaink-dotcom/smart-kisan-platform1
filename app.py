@@ -187,28 +187,34 @@ input:focus, textarea:focus {
     border: 1px solid var(--border) !important;
 }
 
-/* Expander HEADER — allow wrapping so long scheme names don't overlap
-   with the bullet-separated farmer count / rating that follows. */
+/* Expander HEADER — keep the arrow on the SAME line as the scheme name,
+   while still allowing long names to wrap onto a second line within
+   the text column (not pushed below the arrow). */
 [data-testid="stExpander"] summary,
 [data-testid="stExpander"] details > summary,
+.streamlit-expanderHeader {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+    min-height: 2.4rem !important;
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+}
 [data-testid="stExpander"] summary > span,
 [data-testid="stExpander"] summary p,
-.streamlit-expanderHeader,
 .streamlit-expanderHeader p {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
     white-space: normal !important;
     overflow-wrap: anywhere !important;
     word-break: break-word !important;
     line-height: 1.5 !important;
-    padding-top: 0.35rem !important;
-    padding-bottom: 0.35rem !important;
-    min-height: 2.4rem !important;
-    display: block !important;
-}
-[data-testid="stExpander"] summary {
-    align-items: center !important;
-    gap: 0.5rem !important;
+    display: inline !important;
 }
 [data-testid="stExpander"] summary svg {
+    flex: 0 0 auto !important;
     flex-shrink: 0 !important;
 }
 
@@ -232,39 +238,50 @@ input:focus, textarea:focus {
     white-space: normal !important;
     line-height: 1.4 !important;
 }
+/* Dropzone — stack instructions ABOVE the button (column layout)
+   to eliminate the overlap between the drag-and-drop text and the
+   "Browse files" button at narrow widths. */
 [data-testid="stFileUploaderDropzone"] {
     background-color: #ffffff !important;
     border: 1px dashed var(--border) !important;
     border-radius: 10px !important;
-    padding: 0.9rem 1rem !important;
-    gap: 0.85rem !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
+    padding: 1rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 0.75rem !important;
+    flex-wrap: nowrap !important;
+    position: relative !important;
 }
 [data-testid="stFileUploaderDropzoneInstructions"] {
-    flex: 1 1 60% !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
     min-width: 0 !important;
-    padding-right: 0.5rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 [data-testid="stFileUploaderDropzoneInstructions"] span,
 [data-testid="stFileUploaderDropzoneInstructions"] small,
 [data-testid="stFileUploaderDropzoneInstructions"] div {
-    font-size: 0.82rem !important;
-    line-height: 1.35 !important;
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
     white-space: normal !important;
     overflow-wrap: anywhere !important;
     color: var(--muted) !important;
 }
-/* "Browse files" button inside the dropzone — keep it compact so
-   the instructions don't get pushed under or overwritten. */
+/* "Browse files" button — sits BELOW the instructions, never overlaps. */
 [data-testid="stFileUploaderDropzone"] button {
     flex: 0 0 auto !important;
+    align-self: flex-start !important;
     width: auto !important;
-    min-width: 7rem !important;
+    min-width: 8rem !important;
+    max-width: 12rem !important;
     min-height: 38px !important;
-    padding: 0.4rem 0.9rem !important;
+    padding: 0.45rem 1rem !important;
     font-size: 0.85rem !important;
     white-space: nowrap !important;
+    margin: 0 !important;
 }
 [data-testid="stFileUploaderDropzone"] button p {
     margin: 0 !important;
