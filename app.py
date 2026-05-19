@@ -409,14 +409,10 @@ header    { visibility: hidden; }
 .main .block-container { padding-top: 1.5rem; padding-bottom: 2.25rem; max-width: 1200px; }
 
 /* ════════════════════════════════════════════════════════
-   HIDE TOPBAR TRIGGER BUTTONS (TOPBAR_LOGOUT / TOPBAR_LOGIN)
-   These are functional Streamlit buttons hidden visually;
-   the visible pill above triggers them via JS onclick.
+   HIDE TOPBAR_LOGIN TRIGGER BUTTON
+   This is a functional Streamlit button hidden visually;
+   the visible pill above triggers it via JS onclick.
 ════════════════════════════════════════════════════════ */
-/* Hide the button block that contains TOPBAR_LOGOUT or TOPBAR_LOGIN */
-.stButton:has(button p):not(:has(button p:empty)) button p {
-    /* visible by default */
-}
 
 </style>
 """, unsafe_allow_html=True)
@@ -427,8 +423,7 @@ init_db()
 def show_topbar():
     logged_in = st.session_state.get("logged_in", False)
     page      = st.session_state.get("page", "language_select")
-    show_logout_btn = logged_in
-    show_login_btn  = not logged_in and page not in ("login", "language_select")
+    show_login_btn = not logged_in and page not in ("login", "language_select")
 
     st.markdown("""
     <div id="india-flag-topbar">
@@ -438,38 +433,18 @@ def show_topbar():
 
     action_key = f"topbar_btn_{page}"
 
-    if show_logout_btn:
-        st.markdown("""
-        <div id="topbar-login-pill" onclick="
-            Array.from(window.parent.document.querySelectorAll('button')).find(
-                b => b.innerText.trim() === 'TOPBAR_LOGOUT')?.click();">
-            <span>🚪 Logout</span>
-        </div>""", unsafe_allow_html=True)
-        if st.button("TOPBAR_LOGOUT", key=action_key):
-            from database import log_admin_action as _log
-            if st.session_state.get("user_type") == "admin":
-                try: _log(st.session_state.user_data["username"], "LOGOUT", "Logged out via topbar")
-                except: pass
-            for k in ["logged_in","user_type","user_data"]:
-                st.session_state[k] = None
-            st.session_state.logged_in = False
-            st.session_state.page = "language_select"
-            st.rerun()
-
-    elif show_login_btn:
+    if show_login_btn:
         st.markdown("""
         <div id="topbar-login-pill" onclick="
             Array.from(window.parent.document.querySelectorAll('button')).find(
                 b => b.innerText.trim().startsWith('TOPBAR_LOGIN'))?.click();">
             <span>🔐 Login</span>
         </div>""", unsafe_allow_html=True)
-        st.markdown("<div style='position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;'>", unsafe_allow_html=True)
         if st.button("TOPBAR_LOGIN", key=action_key):
             st.session_state.page = "login"
             st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
 
-    else:
+    elif not logged_in:
         st.markdown("""
         <div id="topbar-login-pill" style="cursor:default;">
             <span>💧 Smart KisanJal</span>
@@ -485,35 +460,33 @@ init_session()
 page = st.session_state.page
 show_topbar()
 
-# Inject JS to hide the TOPBAR_LOGOUT/TOPBAR_LOGIN trigger buttons after render
+# Inject JS to hide the TOPBAR_LOGIN trigger button after render
 st.markdown("""<script>
 (function(){
   function hideBtn(){
     try {
       var btns=window.parent.document.querySelectorAll('button');
       btns.forEach(function(b){
-        var t=b.innerText.trim();
-        if(t==='TOPBAR_LOGOUT'||t==='TOPBAR_LOGIN'){
-          // Hide the button itself
-          b.style.cssText='position:fixed!important;top:-9999px!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:auto!important;';
-          // Walk up and hide the stVerticalBlock container
+        var t=(b.innerText||'').trim();
+        if(t==='TOPBAR_LOGIN'){
           var el=b;
           for(var i=0;i<8;i++){
             el=el.parentElement;
             if(!el) break;
             if(el.className&&el.className.indexOf('stVerticalBlock')>-1){
-              el.style.cssText='position:fixed!important;top:-9999px!important;left:-9999px!important;height:1px!important;width:1px!important;overflow:hidden!important;';
+              el.style.cssText='position:fixed!important;top:-9999px!important;left:-9999px!important;height:1px!important;width:1px!important;overflow:hidden!important;opacity:0!important;';
               break;
             }
           }
+          b.style.cssText='position:fixed!important;top:-9999px!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:auto!important;';
         }
       });
     } catch(e){}
   }
   hideBtn();
-  setTimeout(hideBtn,100);
-  setTimeout(hideBtn,500);
-  setTimeout(hideBtn,1500);
+  setTimeout(hideBtn,50);
+  setTimeout(hideBtn,200);
+  setTimeout(hideBtn,800);
   var mo=new MutationObserver(hideBtn);
   mo.observe(window.parent.document.body,{childList:true,subtree:true});
 })();
